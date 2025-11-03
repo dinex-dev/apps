@@ -2,8 +2,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const rimraf = require('rimraf').sync
-const yaml = require('js-yaml')
+const yaml = require('yaml')
 
 fs.readdirSync(path.join(__dirname, '../apps'))
   .filter((filename) => {
@@ -13,11 +12,11 @@ fs.readdirSync(path.join(__dirname, '../apps'))
   })
   .filter((filename) => {
     const yamlFile = path.join(__dirname, `../apps/${filename}/${filename}.yml`)
-    const meta = yaml.load(fs.readFileSync(yamlFile))
+    const meta = yaml.parse(fs.readFileSync(yamlFile, 'utf-8'))
     return meta.disabled ? true : false
   })
   .forEach((filename) => {
     const appDir = path.join(__dirname, `../apps/${filename}`)
     console.log(`Removing disabled ${filename} app`)
-    rimraf(appDir)
+    fs.rmSync(appDir, { recursive: true, force: true })
   })

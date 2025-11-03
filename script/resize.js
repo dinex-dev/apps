@@ -1,10 +1,10 @@
 const sharp = require('sharp')
 const path = require('path')
 const fs = require('fs')
-const recursiveReadSync = require('recursive-readdir-sync')
+const readdirp = require('readdirp')
 const imagemin = require('imagemin')
 const imageminPngquant = require('imagemin-pngquant')
-const yaml = require('js-yaml')
+const yaml = require('yaml')
 
 async function resize(file, size) {
   const newFile = file.replace('.png', `-${size}.png`)
@@ -27,9 +27,12 @@ async function resize(file, size) {
 }
 
 async function main() {
-  const icons = recursiveReadSync(path.join(__dirname, '../apps')).filter(
-    (file) => file.match(/icon\.png/)
-  )
+  const icons = []
+  for await (const entry of readdirp(path.join(__dirname, '../apps'))) {
+    if (entry.basename.match(/icon\.png/)) {
+      icons.push(entry.fullPath)
+    }
+  }
 
   console.log(`Resizing ${icons.length} icons...`)
   const resizes = icons.reduce((acc, icon) => {
@@ -37,7 +40,7 @@ async function main() {
 
     // skip disabled app
     const yamlFile = path.join(icon.replace('-icon.png', '.yml'))
-    const { disabled } = yaml.load(fs.readFileSync(yamlFile))
+    const { disabled } = yaml.parse(fs.readFileSync(yamlFile, 'utf-8'))
     if (disabled) {
       return acc
     }

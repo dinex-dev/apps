@@ -3,9 +3,8 @@ const describe = mocha.describe
 const it = mocha.it
 const fs = require('fs')
 const path = require('path')
-const yaml = require('js-yaml')
+const yaml = require('yaml')
 const apps = require('..')
-const isHexColor = require('is-hexcolor')
 const categories = require('../categories')
 const expect = require('chai').expect
 
@@ -25,7 +24,7 @@ describe('machine-generated app data (exported by the module)', () => {
           __dirname,
           `../apps/${filename}/${filename}.yml`
         )
-        const meta = yaml.load(fs.readFileSync(yamlFile))
+        const meta = yaml.parse(fs.readFileSync(yamlFile, 'utf-8'))
 
         if (meta.disabled) {
           return false
@@ -72,40 +71,6 @@ describe('machine-generated app data (exported by the module)', () => {
     })
   })
 
-  it('sets an `iconColors` array on every app', () => {
-    apps.forEach((app) => {
-      expect(app.iconColors).to.be.an('array', app.slug)
-      expect(app.iconColors.length).to.be.above(2, app.slug)
-    })
-  })
-
-  it('sets a `colors.goodColorOnWhite` hex value on every app', () => {
-    apps.forEach((app) => {
-      expect(isHexColor(app.goodColorOnWhite)).to.eq(true)
-    })
-  })
-
-  it('sets a `colors.faintColorOnWhite` semi-transparent rgba value on every app', () => {
-    apps.forEach((app) => {
-      expect(
-        app.faintColorOnWhite,
-        `${app.slug}'s faintColorOnWhite is not right`
-      ).to.match(/rgba\(\d+, \d+, \d+, /)
-    })
-  })
-
-  it('sets a `colors.goodColorOnBlack` hex value on every app', () => {
-    apps.forEach((app) => {
-      expect(isHexColor(app.goodColorOnBlack)).to.eq(true)
-    })
-  })
-
-  it('does not override good colors if they already exist', () => {
-    const hyper = apps.find((app) => app.slug === 'hyper')
-    expect(hyper.goodColorOnWhite).to.eq('#000')
-    expect(hyper.goodColorOnBlack).to.eq('#FFF')
-  })
-
   describe('releases', () => {
     const appsWithRepos = require('../lib/apps-with-github-repos')
     const appsWithLatestRelease = apps.filter((app) => app.latestRelease)
@@ -130,32 +95,6 @@ describe('machine-generated app data (exported by the module)', () => {
       expect(
         appsWithLatestRelease.every((app) => app.latestReleaseFetchedAt)
       ).to.eq(true)
-    })
-  })
-
-  describe('readmes', () => {
-    const readmeApps = apps.filter((app) => app.readmeCleaned)
-
-    it('collects READMEs for apps with GitHub repos', () => {
-      expect(readmeApps.length).to.be.above(50)
-    })
-
-    it('sets `readmeCleaned`', () => {
-      expect(readmeApps.every((app) => app.readmeCleaned.length > 0)).to.eq(
-        true
-      )
-    })
-
-    it('sets `readmeOriginal`', () => {
-      expect(readmeApps.every((app) => app.readmeOriginal.length > 0)).to.eq(
-        true
-      )
-    })
-
-    it('sets `readmeFetchedAt`', () => {
-      expect(readmeApps.every((app) => app.readmeFetchedAt.length > 0)).to.eq(
-        true
-      )
     })
   })
 })

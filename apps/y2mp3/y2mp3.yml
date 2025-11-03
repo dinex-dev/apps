@@ -3,6 +3,7 @@ description: 'Download youtube videos to audio files.'
 website: 'https://github.com/moshfeu/y2mp3'
 category: Music
 repository: 'https://github.com/moshfeu/y2mp3'
+keywords:
   - youtube
   - playlist
   - download
@@ -10,8 +11,5 @@ repository: 'https://github.com/moshfeu/y2mp3'
   - free
   - audio
 license: MIT
-colors:
-  goodColorOnWhite: '#148544'
-  goodColorOnBlack: '#27ae60'
 locales:
   - en-US
