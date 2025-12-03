@@ -1,0 +1,13 @@
+name: Requestly
+description: Lightweight Git-Friendly API Client Built for Modern Developers.
+website: https://requestly.com
+category: Developer Tools
+repository: https://github.com/requestly/requestly-desktop-app
+keywords:
+  - REST
+  - HTTP
+  - API
+  - API Client
+  - API Testing
+license: GNU AGPLv3
+homebrewCaskName: requestly
