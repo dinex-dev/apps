@@ -1,5 +1,5 @@
 name: Requestly
-description: Lightweight Git-Friendly API Client Built for Modern Developers.
+description: API client and network interceptor for fast API testing and debugging.
 website: https://requestly.com
 category: Developer Tools
 repository: https://github.com/requestly/requestly-desktop-app
